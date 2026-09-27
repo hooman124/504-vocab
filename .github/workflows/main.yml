@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     env:
       HAS_SIGNING: ${{ secrets.KEYSTORE_BASE64 != '' }}
 
@@ -29,6 +30,21 @@ jobs:
 
       - name: Show Flutter version
         run: flutter --version
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 12266719
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: true
+          packages: tools platform-tools
+
+      - name: Create local.properties
+        working-directory: android
+        run: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "Created android/local.properties:"
+          cat local.properties
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -53,6 +69,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           echo "$KEYSTORE_BASE64" | base64 -d > android/app/release-keystore.jks
+
           cat > android/key.properties <<EOF
           storePassword=$KEYSTORE_PASSWORD
           keyPassword=$KEY_PASSWORD
@@ -63,7 +80,7 @@ jobs:
       - name: Build release APK
         run: flutter build apk --release
 
-      - name: Build release AAB (App Bundle)
+      - name: Build release AAB
         run: flutter build appbundle --release
 
       - name: Upload APK artifact
