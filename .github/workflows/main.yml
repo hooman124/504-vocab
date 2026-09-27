@@ -55,12 +55,12 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.7'
+          gradle-version: '8.14'
 
       - name: Generate Gradle wrapper
         working-directory: android
         run: |
-          gradle wrapper --gradle-version 8.7 --distribution-type all
+          gradle wrapper --gradle-version 8.14 --distribution-type all
           chmod +x gradlew
 
       - name: Install Flutter dependencies
