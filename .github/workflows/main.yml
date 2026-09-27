@@ -57,6 +57,25 @@ jobs:
         with:
           gradle-version: '8.14'
 
+      - name: Upgrade Android Gradle Plugin
+        working-directory: android
+        run: |
+          echo "Before:"
+          grep -R "com.android.application" -n settings.gradle build.gradle 2>/dev/null || true
+          
+          if [ -f settings.gradle ]; then
+            sed -i "s/id 'com.android.application' version '[^']*'/id 'com.android.application' version '8.11.1'/g" settings.gradle
+            sed -i 's/id "com.android.application" version "[^"]*"/id "com.android.application" version "8.11.1"/g' settings.gradle
+          fi
+
+          if [ -f build.gradle ]; then
+            sed -i "s/com.android.tools.build:gradle:[0-9.]*/com.android.tools.build:gradle:8.11.1/g" build.gradle
+          fi
+
+          echo "After:"
+          grep -R "com.android.application" -n settings.gradle build.gradle 2>/dev/null || true
+          grep -R "com.android.tools.build:gradle" -n build.gradle 2>/dev/null || true
+
       - name: Generate Gradle wrapper
         working-directory: android
         run: |
