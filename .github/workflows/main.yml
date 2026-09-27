@@ -47,6 +47,8 @@ jobs:
         working-directory: android
         run: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+          echo "flutter.sdk=$FLUTTER_ROOT" >> local.properties
+
           echo "Created android/local.properties:"
           cat local.properties
 
