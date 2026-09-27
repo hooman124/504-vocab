@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HAS_SIGNING: ${{ secrets.KEYSTORE_BASE64 != '' }}
 
     steps:
       - name: Checkout repository
@@ -43,7 +45,7 @@ jobs:
         run: flutter pub get
 
       - name: Set up release signing
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        if: ${{ env.HAS_SIGNING == 'true' }}
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
